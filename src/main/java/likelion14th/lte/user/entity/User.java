@@ -1,5 +1,6 @@
 package likelion14th.lte.user.entity;
 
+import likelion14th.lte.statistic.entity.Statistic;
 import jakarta.persistence.*;
 import likelion14th.lte.follow.entity.Follow;
 import likelion14th.lte.Entity.BaseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,17 +43,22 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "statistic_id")
+    private Statistic statistic;
+
     @Builder(access = AccessLevel.PUBLIC)
-    private User (String username, String userTag, String introduction){
+    private User(String username, String userTag, String introduction) {
         this.username = username;
         this.userTag = userTag;
         this.introduction = introduction;
         this.followers = new ArrayList<>();
         this.followings = new ArrayList<>();
+
+        this.statistic = Statistic.create();
     }
 
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }
 }
-

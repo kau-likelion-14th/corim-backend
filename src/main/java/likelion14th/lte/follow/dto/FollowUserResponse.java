@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FollowUserResponse {
-    private Long userID;
+    private Long userId;
     private String userName;
     private String profileImageUrl;
     private String introduction;
