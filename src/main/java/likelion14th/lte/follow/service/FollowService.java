@@ -90,12 +90,12 @@ public class FollowService {
     }
     // @@@@@@@@@@2 과제 1
     @Transactional
-    public void unfollow(Long userId, Long toUserId) {
-        if (userId.equals(toUserId)) {
+    public void unfollow(Long fromUserId, Long toUserId) {
+        if (fromUserId.equals(toUserId)) {
             throw new GeneralException(ErrorCode.FOLLOW_SELF_NOT_ALLOWED);
         }
 
-        User fromUser = userRepository.findById(userId)
+        User fromUser = userRepository.findById(fromUserId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
         User toUser = userRepository.findById(toUserId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.FOLLOW_TARGET_NOT_FOUND));
