@@ -77,7 +77,7 @@ public class StatisticService {
         boolean hasFail = todoDateRepository.existsByTodo_User_IdAndDateAndCompleted(userId, yesterday, false);
         statistic.updateStreak(hasSuccess, hasFail);
 
-        if (hasSuccess) {
+        if (hasSuccess && !hasFail) {
             for (StatWeek statWeek : statistic.getStatWeeks()) {
                 if (statWeek.getWeek().toDayOfWeek() == yesterday.getDayOfWeek()) {
                     statWeek.addCount();

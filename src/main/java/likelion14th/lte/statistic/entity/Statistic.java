@@ -45,10 +45,14 @@ public class Statistic {
 
     /*@@@@@@@@@@@ 과제 1 @@@@@@@@@@@*/
     public WeekEnum getMostTodoWeek() {
+        boolean hasAnyCount = statWeeks.stream().anyMatch(sw -> sw.getCount() > 0);
+        if (!hasAnyCount) {
+            return null;
+        }
         return statWeeks.stream()
                 .max(Comparator.comparingInt(StatWeek::getCount))
                 .map(StatWeek::getWeek)
-                .orElse(WeekEnum.MON);
+                .orElse(null);
     }
 
     /*@@@@@@@@@@@ 과제 2 @@@@@@@@@@@*/
