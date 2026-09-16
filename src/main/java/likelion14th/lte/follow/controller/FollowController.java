@@ -31,7 +31,7 @@ public class FollowController {
     @PostMapping
     @Operation(summary = "팔로우 추가", description = "json 요청에 유저 아이디를 전달해줍니다.")
     public ApiResponse<FollowUserResponse> addFollow(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Jwt jwt,
             @RequestBody FollowUserRequest followUserRequest
     ){
         FollowUserResponse response = followService.followUser(userId, followUserRequest.getToUserId());
@@ -43,7 +43,7 @@ public class FollowController {
     @Operation(summary = "팔로우 추가", description = "닉네임으로 팔로우 가능한 유저를 검색합니다. 쿼리 파라미터로 page, size, sort를 전달할 수 있습니다."+
             "sort 파라미터는 선택사항이며, 형식 : sort = id, DESC 또는 sort = username, ASC (쉼표로 구분).")
     public ApiResponse<Page<FollowUserResponse>> getSearchFollows(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Jwt jwt,
             @RequestParam String nickname,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
@@ -55,7 +55,7 @@ public class FollowController {
     @DeleteMapping
     @Operation(summary = "언팔로우 (팔로우 취소)", description = "대상 유저와의 팔로우 관계를 해제합니다.")
     public ApiResponse<Void> unfollow(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Jwt jwt,
             @RequestBody FollowUserRequest request) {
 
         followService.unfollow(userId, request.getToUserId());
@@ -65,7 +65,7 @@ public class FollowController {
     // @@@@@@@@@@ 과제 2
     @GetMapping("/followers")
     @Operation(summary = "팔로워 목록 조회", description = "나를 팔로우하는 유저 목록을 반환합니다.")
-    public ApiResponse<List<FollowUserResponse>> getFollowers(@RequestParam Long userId) {
+    public ApiResponse<List<FollowUserResponse>> getFollowers(@AuthenticationPrincipal Jwt jwt) {
 
         List<FollowUserResponse> response = followService.getFollowers(userId);
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_LIST_GET_SUCCESS, response);
@@ -74,7 +74,7 @@ public class FollowController {
     // @@@@@@@@@@ 과제 3
     @GetMapping("/followings")
     @Operation(summary = "팔로잉 목록 조회", description = "내가 팔로우하는 유저 목록을 반환합니다.")
-    public ApiResponse<List<FollowUserResponse>> getFollowings(@RequestParam Long userId) {
+    public ApiResponse<List<FollowUserResponse>> getFollowings(@AuthenticationPrincipal Jwt jwt) {
 
         List<FollowUserResponse> response = followService.getFollowings(userId);
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_LIST_GET_SUCCESS, response);
@@ -84,7 +84,7 @@ public class FollowController {
     @GetMapping
     @Operation(summary = "팔로우 가능 유저 전체 조회", description = "아직 내가 팔로우하지 않은 유저 전체 목록을 조회합니다.")
     public ApiResponse<Page<FollowUserResponse>> getCanFollowUsers(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Jwt jwt,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         Page<FollowUserResponse> response = followService.getCanFollowUsers(userId, pageable);
