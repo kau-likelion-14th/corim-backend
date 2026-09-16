@@ -31,7 +31,7 @@ public class TodoController {
     @GetMapping
     @Operation(summary = "날짜별 투두 목록 조회", description = "선택한 날짜의 투두 목록을 조회합니다.")
     public ApiResponse<List<TodoListResponse>> getTodosByDate(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
         List<TodoListResponse> todos = todoService.getTodosByDate(userId, date);
@@ -44,7 +44,7 @@ public class TodoController {
     @PostMapping
     @Operation(summary = "투두 생성", description = "일반/루틴 투두를 생성합니다.")
     public ApiResponse<TodoDetailResponse> createTodo(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @Valid @RequestBody  TodoCreateRequest todoCreateRequest,
             // 일반 투두는 필수, 루틴 투두는 startDate, endDate 사용
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
@@ -57,7 +57,7 @@ public class TodoController {
     @DeleteMapping("/{todoId}/dates/{date}")
     @Operation(summary = "투두 삭제", description = "선택한 날짜 기준으로 투두를 삭제합니다.")
     public ApiResponse<String> deleteTodo(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
@@ -69,7 +69,7 @@ public class TodoController {
     @PatchMapping("/{todoId}/dates/{date}/complete")
     @Operation(summary = "투두 완료 상태 변경", description = "선택한 날짜의 투두 완료 상태를 변경합니다.")
     public ApiResponse<TodoListResponse> updateTodoComplete(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid @RequestBody  TodoCompleteUpdateRequest request
@@ -82,7 +82,7 @@ public class TodoController {
     @GetMapping("/{todoId}")
     @Operation(summary = "투두 상세 조회", description = "투두의 상세 정보를 조회합니다.")
     public ApiResponse<TodoDetailResponse> getTodoDetail(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @PathVariable Long todoId
     ){
         TodoDetailResponse todo = todoService.getTodoDetail(userId, todoId);
@@ -93,7 +93,7 @@ public class TodoController {
     @PutMapping("/{todoId}")
     @Operation(summary = "투두 수정", description = "투두의 상세 정보를 수정합니다.")
     public ApiResponse<TodoDetailResponse> updateTodoDetail(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @PathVariable Long todoId,
             @Valid @RequestBody TodoUpdateRequest todoUpdateRequest
     ){

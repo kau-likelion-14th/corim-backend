@@ -25,7 +25,7 @@ public class TodoCalendarController {
     @GetMapping("/calendar")
     @Operation(summary = "월별 투두 캘린더 조회", description = "해당 월의 날짜별 남은 투두 개수와 투두 존재 여부를 반환합니다.")
     public ApiResponse<TodoCalendarMonthResponse> getCalendarMonth(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long userId,
             @RequestParam int year,
             @RequestParam int month
     ) {

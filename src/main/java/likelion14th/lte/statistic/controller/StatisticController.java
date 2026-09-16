@@ -22,7 +22,7 @@ public class StatisticController {
 
     @GetMapping
     @Operation(summary = "통계 조회", description = "해당 유저의 통계(연속 성공일, 최근 30일 완료율, 가장 투두를 많이 완료한 요일)를 반환합니다.")
-    public ApiResponse<StatisticResponse> getStatistic(@AuthenticationPrincipal Jwt jwt) {
+    public ApiResponse<StatisticResponse> getStatistic(@RequestParam Long userId) {
         StatisticResponse response = statisticService.getStatistic(userId);
         return ApiResponse.onSuccess(SuccessCode.STATISTICS_GET_SUCCESS, response);
     }
