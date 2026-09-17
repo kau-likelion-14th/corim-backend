@@ -8,6 +8,7 @@ import likelion14th.lte.todo.dto.response.TodoCalendarMonthResponse;
 import likelion14th.lte.todo.service.TodoCalendarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,7 @@ public class TodoCalendarController {
             @RequestParam int year,
             @RequestParam int month
     ) {
+        Long userId = Long.parseLong(jwt.getSubject());
         TodoCalendarMonthResponse response =
                 todoCalendarService.getMonthRemainingCounts(userId, year, month);
         return ApiResponse.onSuccess(SuccessCode.TODO_CALENDAR_MONTH_GET_SUCCESS, response);

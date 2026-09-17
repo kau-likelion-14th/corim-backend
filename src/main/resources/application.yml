@@ -1,14 +1,25 @@
 spring:
-    config:
-        import: optional:file:.env[.properties]
     profiles:
         active: local
+    config:
+        import: optional:file:.env[.properties]
 
     servlet:
         multipart:
             enabled: true
             max-file-size: 50MB
             max-request-size: 50MB
+
+cloud:
+    aws:
+        credentials:
+            access-key: ${AWS_ACCESS_KEY}
+            secret-key: ${AWS_SECRET_KEY}
+        region: ${AWS_REGION}
+        s3:
+            bucket: ${AWS_BUCKET}
+            path:
+                location: user/
 server:
     port: ${PORT:8080}
 
@@ -55,7 +66,7 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: update
+            ddl-auto: create
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQLDialect

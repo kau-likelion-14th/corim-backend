@@ -15,6 +15,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,7 @@ public class FollowController {
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody FollowUserRequest followUserRequest
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         FollowUserResponse response = followService.followUser(userId, followUserRequest.getToUserId());
 
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_ADD_SUCCESS, response);
@@ -47,6 +50,7 @@ public class FollowController {
             @RequestParam String nickname,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         Page<FollowUserResponse> responses = followService.searchCanFollowers(userId, nickname,pageable);
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_SEARCH_SUCCESS, responses);
     }
@@ -58,6 +62,7 @@ public class FollowController {
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody FollowUserRequest request) {
 
+        Long userId = Long.parseLong(jwt.getSubject());
         followService.unfollow(userId, request.getToUserId());
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_DELETE_SUCCESS, null);
     }
@@ -67,6 +72,7 @@ public class FollowController {
     @Operation(summary = "팔로워 목록 조회", description = "나를 팔로우하는 유저 목록을 반환합니다.")
     public ApiResponse<List<FollowUserResponse>> getFollowers(@AuthenticationPrincipal Jwt jwt) {
 
+        Long userId = Long.parseLong(jwt.getSubject());
         List<FollowUserResponse> response = followService.getFollowers(userId);
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_LIST_GET_SUCCESS, response);
     }
@@ -76,6 +82,7 @@ public class FollowController {
     @Operation(summary = "팔로잉 목록 조회", description = "내가 팔로우하는 유저 목록을 반환합니다.")
     public ApiResponse<List<FollowUserResponse>> getFollowings(@AuthenticationPrincipal Jwt jwt) {
 
+        Long userId = Long.parseLong(jwt.getSubject());
         List<FollowUserResponse> response = followService.getFollowings(userId);
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_LIST_GET_SUCCESS, response);
     }
@@ -87,6 +94,7 @@ public class FollowController {
             @AuthenticationPrincipal Jwt jwt,
             @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
+        Long userId = Long.parseLong(jwt.getSubject());
         Page<FollowUserResponse> response = followService.getCanFollowUsers(userId, pageable);
 
         return ApiResponse.onSuccess(SuccessCode.FOLLOW_SEARCH_SUCCESS, response);
