@@ -72,6 +72,35 @@ public class UserProfileService {
             throw GeneralException.of(mapToErrorCode(e.getReason()));
         }
     }
+
+    @Transactional
+    public UserProfileResponse deleteProfileImage(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.getS3ImageKey() != null) {
+            try {
+                s3Utils.deleteFile(user.getS3ImageKey());
+            } catch (UtilException e) {
+                throw GeneralException.of(mapToErrorCode(e.getReason()));
+            }
+        }
+
+        user.removeProfileImage();
+
+        return UserProfileResponse.from(user);
+    }
+
+    @Transactional
+    public UserProfileResponse updateIntroduction(Long userId, String introduce) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateIntroduction(introduce);
+
+        return UserProfileResponse.from(user);
+    }
+
     private ErrorCode mapToErrorCode(UtilException.Reason reason) {
         return switch (reason) {
             case FILE_EMPTY -> ErrorCode.IMAGE_FILE_EMPTY;

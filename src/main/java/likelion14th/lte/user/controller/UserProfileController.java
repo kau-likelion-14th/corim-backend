@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
+import likelion14th.lte.user.dto.request.UserIntroRequest;
 
 @RestController
 @Slf4j
@@ -52,5 +53,36 @@ public class UserProfileController {
 
         UserProfileResponse response = userProfileService.putProfileImage(userId,file);
         return ApiResponse.onSuccess(SuccessCode.PROFILE_PUT_SUCCESS,response);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "프로필 이미지 삭제", description = "로그인한 본인의 프로필 이미지를 삭제합니다.")
+    public ApiResponse<UserProfileResponse> deleteProfileImage(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        Long userId = Long.valueOf(jwt.getSubject());
+        UserProfileResponse response = userProfileService.deleteProfileImage(userId);
+        return ApiResponse.onSuccess(SuccessCode.PROFILE_DELETE_SUCCESS, response);
+    }
+
+    @GetMapping("/touser")
+    @Operation(summary = "다른 유저 프로필 조회", description = "toUserId에 해당하는 유저의 프로필을 조회합니다.")
+    public ApiResponse<UserProfileResponse> getOtherUserProfile(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam Long toUserId
+    ) {
+        UserProfileResponse response = userProfileService.getUserProfile(toUserId);
+        return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS, response);
+    }
+
+    @PutMapping("/intro")
+    @Operation(summary = "한줄 소개 수정", description = "로그인한 본인의 한줄 소개를 수정합니다.")
+    public ApiResponse<UserProfileResponse> updateIntroduction(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody UserIntroRequest request
+    ) {
+        Long userId = Long.valueOf(jwt.getSubject());
+        UserProfileResponse response = userProfileService.updateIntroduction(userId, request.getIntroduce());
+        return ApiResponse.onSuccess(SuccessCode.USER_PROFILE_UPDATE_SUCCESS, response);
     }
 }
