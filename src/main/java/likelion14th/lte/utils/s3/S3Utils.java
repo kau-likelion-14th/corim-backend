@@ -79,9 +79,9 @@ public class S3Utils {
             s3Client.putObject(req,RequestBody.fromBytes(bytes));
             return new S3Dto(getUrl(key), key);
         } catch(SdkClientException e){
-            throw new UtilException(S3_UPLOAD_FAILED,e);
+            throw e;
         } catch (Exception e){
-            throw new UtilException(S3_UPLOAD_FAILED,e);
+            throw e;
         }
     }
     public void deleteFile(String key){
