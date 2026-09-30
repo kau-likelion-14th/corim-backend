@@ -14,6 +14,7 @@ import likelion14th.lte.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ public class TodoController {
             @AuthenticationPrincipal Jwt jwt,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         List<TodoListResponse> todos = todoService.getTodosByDate(userId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_LIST_GET_SUCCESS, todos);
     }
@@ -49,6 +51,7 @@ public class TodoController {
             // 일반 투두는 필수, 루틴 투두는 startDate, endDate 사용
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
             ){
+        Long userId = Long.parseLong(jwt.getSubject());
         TodoDetailResponse createdResponse = todoService.createTodo(userId,todoCreateRequest,date);
         return ApiResponse.onSuccess(SuccessCode.TODO_CREATE_SUCCESS, createdResponse);
     }
@@ -61,6 +64,7 @@ public class TodoController {
             @PathVariable Long todoId,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         todoService.deleteTodo(userId, todoId, date);
         return ApiResponse.onSuccess(SuccessCode.TODO_DELETE_SUCCESS, "OK");
     }
@@ -74,6 +78,7 @@ public class TodoController {
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid @RequestBody  TodoCompleteUpdateRequest request
     ) {
+        Long userId = Long.parseLong(jwt.getSubject());
         TodoListResponse updatedResponse = todoService.todoComplete(userId, todoId, date, request.getCompleted());
         return ApiResponse.onSuccess(SuccessCode.TODO_COMPLETE_SUCCESS, updatedResponse);
     }
@@ -85,6 +90,7 @@ public class TodoController {
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable Long todoId
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         TodoDetailResponse todo = todoService.getTodoDetail(userId, todoId);
         return ApiResponse.onSuccess(SuccessCode.TODO_DETAIL_GET_SUCCESS, todo);
     }
@@ -97,6 +103,7 @@ public class TodoController {
             @PathVariable Long todoId,
             @Valid @RequestBody TodoUpdateRequest todoUpdateRequest
     ){
+        Long userId = Long.parseLong(jwt.getSubject());
         TodoDetailResponse updatedResponse = todoService.updateTodoDetail(
                 userId,
                 todoId,
