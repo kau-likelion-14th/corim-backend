@@ -58,7 +58,7 @@ jobs:
           cp -r .ebextensions_dev deploy/.ebextensions
           cp -r .platform deploy/.platform
           
-          cp deploy && zip -r deploy.zip
+          cd deploy && zip -r deploy.zip
 
       - name: Verify deploy zip content
         run : |
